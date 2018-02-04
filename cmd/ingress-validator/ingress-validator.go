@@ -20,6 +20,14 @@ func main() {
 	}
 	fmt.Printf("There are %d ingresses in the cluster\n", len(ingresses.Items))
 
+	// https://github.com/kubernetes/kubernetes/blob/master/staging/src/k8s.io/api/extensions/v1beta1/types.go#L568
+	for _, ingress := range ingresses.Items {
+		// https://github.com/kubernetes/kubernetes/blob/master/staging/src/k8s.io/api/extensions/v1beta1/types.go#L601
+		for _, rule := range ingress.Spec.Rules {
+			// https://github.com/kubernetes/kubernetes/blob/master/staging/src/k8s.io/api/extensions/v1beta1/types.go#L652
+			fmt.Printf("Found host %s", rule.Host)
+		}
+	}
 	// For each ingress, verify that it
 	// - has TLS enabled
 	// - expires > 45 days
