@@ -1,24 +1,24 @@
 package main
 
 import (
-	"flag"
 	"fmt"
-	"io"
-	"net"
 	"os"
-	"path/filepath"
-	"strconv"
 
 	"k8s.io/client-go/kubernetes"
 	"k8s.io/client-go/rest"
-	"k8s.io/client-go/tools/clientcmd"
+	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
 func main() {
-	logger := stdlog.New(os.Stdout, os.Stderr, 0)
+	fmt.Println("Starting ingress validation")
 	client := newClient()
 
 	// Iterate through every ingress and list out each
+	ingresses, err := client.Extensions().Ingresses(metav1.NamespaceAll).List(metav1.ListOptions{})
+	if err != nil {
+		panic(err.Error())
+	}
+	fmt.Printf("There are %d ingresses in the cluster\n", len(ingresses.Items))
 
 	// For each ingress, verify that it
 	// - has TLS enabled
@@ -26,6 +26,8 @@ func main() {
 	// - only supports tls 1.1, 1.2
 	
 	// Produce a json report with all of the verification info and send to configured location or log
+
+	fmt.Println("Finishing ingress validation")
 }
 
 func newClient() *kubernetes.Clientset {

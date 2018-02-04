@@ -43,7 +43,9 @@ GOPATH=$BUILD_DIR:$GOPATH
 # Build the project
 cd $BUILD_DIR
 mkdir -p bin
-go build -o bin/$PROJECT main
+
+# Cross-platform build
+CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -o bin/$PROJECT ./cmd/ingress-validator
 
 EXIT_STATUS=$?
 
