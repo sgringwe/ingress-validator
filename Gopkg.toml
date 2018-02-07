@@ -36,3 +36,7 @@
 [[constraint]]
   branch = "master"
   name = "k8s.io/apimachinery"
+
+[[constraint]]
+  branch = "master"
+  name = "github.com/ashwanthkumar/slack-go-webhook"

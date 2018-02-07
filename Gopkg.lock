@@ -2,6 +2,12 @@
 
 
 [[projects]]
+  branch = "master"
+  name = "github.com/ashwanthkumar/slack-go-webhook"
+  packages = ["."]
+  revision = "294f07484c855dcbfb409e3e95c04ef7c5cae6ef"
+
+[[projects]]
   name = "github.com/ghodss/yaml"
   packages = ["."]
   revision = "0ca9ea5df5451ffdf184b4428c902747c2c11cd7"
@@ -79,6 +85,18 @@
 
 [[projects]]
   branch = "master"
+  name = "github.com/moul/http2curl"
+  packages = ["."]
+  revision = "9ac6cf4d929b2fa8fd2d2e6dec5bb0feb4f4911d"
+
+[[projects]]
+  name = "github.com/parnurzeal/gorequest"
+  packages = ["."]
+  revision = "a578a48e8d6ca8b01a3b18314c43c6716bb5f5a3"
+  version = "v0.2.15"
+
+[[projects]]
+  branch = "master"
   name = "github.com/petar/GoLLRB"
   packages = ["llrb"]
   revision = "53be0d36a84c2a886ca057d34b6aa4468df9ccb4"
@@ -88,6 +106,12 @@
   packages = ["."]
   revision = "5f041e8faa004a95c88a202771f4cc3e991971e6"
   version = "v2.0.1"
+
+[[projects]]
+  name = "github.com/pkg/errors"
+  packages = ["."]
+  revision = "645ef00459ed84a119197bfb8d8205042c6df63d"
+  version = "v0.8.0"
 
 [[projects]]
   name = "github.com/spf13/pflag"
@@ -102,7 +126,8 @@
     "http2",
     "http2/hpack",
     "idna",
-    "lex/httplex"
+    "lex/httplex",
+    "publicsuffix"
   ]
   revision = "2fb46b16b8dda405028c50f7c7f0f9dd1fa6bfb1"
 
@@ -267,6 +292,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "10ca40d45f11b086ecd211a28a9d2e3e577a09015e71651c220696974f9493a9"
+  inputs-digest = "cbaabaca6c31e80dc0d52072d0ea66344751f5d7ae73995707485e869955a05f"
   solver-name = "gps-cdcl"
   solver-version = 1
