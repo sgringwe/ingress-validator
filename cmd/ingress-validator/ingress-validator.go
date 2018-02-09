@@ -126,7 +126,7 @@ func processResult(result HostResult) {
 	fmt.Printf("Host %s certificate expires in %d days\n", result.Host, minimumDays)
 
 	if minimumDays < MINIMUM_DAYS {
-		message := fmt.Sprintf("Soon expiring certificate found for host %s! Expires in %d days.", result.Host, minimumDays)
+		message := fmt.Sprintf("The TLS certificate for host %s is expiring soon! Expires in %d days.", result.Host, minimumDays)
 		fmt.Println(message)
 		sendSlackMessage(result, message)
 	}
@@ -143,7 +143,6 @@ func sendSlackMessage(result HostResult, message string) {
 	payload := slack.Payload {
 		Text: message,
 		Username: "kubernetes-robot",
-		Channel: "#dev-ops",
 		IconEmoji: ":lock:",
 	}
 
