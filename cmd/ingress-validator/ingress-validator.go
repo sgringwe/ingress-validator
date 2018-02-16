@@ -133,7 +133,7 @@ func processResult(result HostResult) {
 	}
 }
 
-func configuredMinimumDays() int {
+func configuredMinimumDays() int64 {
 	override, err := strconv.ParseInt(os.Getenv("MINIMUM_DAYS"), 10, 0)
 	if err != nil {
 		return DEFAULT_MINIMUM_DAYS
