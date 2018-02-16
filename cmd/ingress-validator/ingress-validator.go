@@ -1,22 +1,23 @@
 package main
 
 import (
-	"fmt"
-	"os"
 	"crypto/tls"
 	"crypto/x509"
+	"fmt"
+	"os"
+	"strconv"
 	"time"
 
+	slack "github.com/ashwanthkumar/slack-go-webhook"
+	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/client-go/kubernetes"
 	"k8s.io/client-go/rest"
-	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
-	slack "github.com/ashwanthkumar/slack-go-webhook"
 )
 
-const MINIMUM_DAYS = 45
+const DEFAULT_MINIMUM_DAYS = 45
 
 type HostResult struct {
-	Host string
+	Host  string
 	Certs []x509.Certificate
 }
 
@@ -29,7 +30,7 @@ func main() {
 	if err != nil {
 		panic(err.Error())
 	}
-	
+
 	var results []HostResult
 
 	// https://github.com/kubernetes/kubernetes/blob/master/staging/src/k8s.io/api/extensions/v1beta1/types.go#L568
@@ -75,14 +76,14 @@ func checkHost(host string) (result HostResult) {
 		Certs: []x509.Certificate{},
 	}
 
-	conn, err := tls.Dial("tcp", host + ":443", nil)
-	
+	conn, err := tls.Dial("tcp", host+":443", nil)
+
 	if err != nil {
 		fmt.Printf("Error checking host %s: %s\n", host, err)
 		return
 	}
 	defer conn.Close()
-	
+
 	checkedCerts := make(map[string]struct{})
 	for _, chain := range conn.ConnectionState().VerifiedChains {
 		for _, cert := range chain {
@@ -116,7 +117,7 @@ func processResult(result HostResult) {
 	var minimumDays int64 = 9999
 
 	for _, cert := range result.Certs {
-		days := int64(cert.NotAfter.Sub(timeNow).Hours()/24)
+		days := int64(cert.NotAfter.Sub(timeNow).Hours() / 24)
 
 		if days < minimumDays {
 			minimumDays = days
@@ -125,11 +126,19 @@ func processResult(result HostResult) {
 
 	fmt.Printf("Host %s certificate expires in %d days\n", result.Host, minimumDays)
 
-	if minimumDays < MINIMUM_DAYS {
+	if minimumDays < configuredMinimumDays() {
 		message := fmt.Sprintf("The TLS certificate for host %s is expiring soon! Expires in %d days.", result.Host, minimumDays)
 		fmt.Println(message)
 		sendSlackMessage(result, message)
 	}
+}
+
+func configuredMinimumDays() int64 {
+	override, err := strconv.ParseInt(os.Getenv("MINIMUM_DAYS"), 10, 0)
+	if err != nil {
+		return DEFAULT_MINIMUM_DAYS
+	}
+	return override
 }
 
 func sendSlackMessage(result HostResult, message string) {
@@ -140,9 +149,9 @@ func sendSlackMessage(result HostResult, message string) {
 		return
 	}
 
-	payload := slack.Payload {
-		Text: message,
-		Username: "kubernetes-robot",
+	payload := slack.Payload{
+		Text:      message,
+		Username:  "kubernetes-robot",
 		IconEmoji: ":lock:",
 	}
 
